@@ -167,9 +167,10 @@ make_csv() {
 
 download_receipt() {
         : "${uuid=""}"
-        mkdir -p uber-receipts
+        : "${outdir=receipts}"
+        mkdir -p "$outdir"
         fare=$(jq <<<"$trip" -r .data.getTrip.trip.fare)
-        uber "/trips/$uuid/receipt?contentType=PDF" -Lo "uber-receipts/$begin $fare $uuid.pdf"
+        uber "/trips/$uuid/receipt?contentType=PDF" -Lo "$outdir/$begin $fare $uuid.pdf"
 }
 
 usage() {
@@ -184,11 +185,25 @@ export cookie_sid=...
 export cookie_csid=...
 export cookie_jwt=...
 
-Now we can use it to download our trip history and receipts.
-By default, it will iterate over all your trips in the current year.
-To download receipts, set download=1.
+Now we can use it to download our trip history and receipts:
 
-Usage: [download=1] [from=...] [to=...] $0
+- By default, the script will iterate over all our trips in the current
+  year. To change it, the 'from' and 'to' timestamps must be provided in
+  milliseconds since epoch.
+
+- By default, the script will only list the trips in CSV format. To also
+  download the corresponding receipts, set 'download=1'. They'll be saved
+  to receipts/ in the current directory by default.
+
+Usage:
+    [from=...] [to=...] [download=1] [outdir=receipts] $0
+
+Examples:
+    # view history from 2021
+    from=\$(date -d2021-01-01 +%s%3N) to=\$(date -d2021-12-31 +%s%3N) $0
+
+    # download receipts for the current year
+    download=1 $0
 EOF
         exit 1
 }
