@@ -174,14 +174,27 @@ download_receipt() {
 
 usage() {
         cat <<EOF
+Instructions:
+
+Before running this script, you'll need login to https://riders.uber.com
+and get the respective cookies from your browser, setting them as the
+following environment variables:
+
+export cookie_sid=...
+export cookie_csid=...
+export cookie_jwt=...
+
+Now we can use it to download our trip history and receipts.
+By default, it will iterate over all your trips in the current year.
+To download receipts, set download=1.
+
 Usage: [download=1] [from=...] [to=...] $0
 EOF
+        exit 1
 }
 
 main() {
-        : "${cookie_sid?}"
-        : "${cookie_csid?}"
-        : "${cookie_jwt?}"
+        if [[ -z $cookie_sid || -z $cookie_csid || -z $cookie_jwt ]]; then usage; fi
         make_csv
 }
 
