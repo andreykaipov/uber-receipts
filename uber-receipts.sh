@@ -84,7 +84,6 @@ uber() {
                 -H 'Origin: https://riders.uber.com' \
                 -H "Cookie: sid=${cookie_sid?}" \
                 -H "Cookie: csid=${cookie_csid?}" \
-                -H "Cookie: jwt-session=${cookie_jwt?}" \
                 -H 'Sec-Fetch-Dest: empty' \
                 -H 'Sec-Fetch-Mode: cors' \
                 -H 'Sec-Fetch-Site: same-origin' \
@@ -183,7 +182,6 @@ following environment variables:
 
 export cookie_sid=...
 export cookie_csid=...
-export cookie_jwt=...
 
 Now we can use it to download our trip history and receipts:
 
@@ -209,7 +207,7 @@ EOF
 }
 
 main() {
-        if [[ -z $cookie_sid || -z $cookie_csid || -z $cookie_jwt ]]; then usage; fi
+        if [[ -z $cookie_sid || -z $cookie_csid ]]; then usage; fi
         make_csv
 }
 
